@@ -13,7 +13,6 @@ def main():
     n = int(input("Enter number of Processes: "))
     processes = []
 
-    # Input process data
     for _ in range(n):
         p_id = int(input("Enter Process Number: "))
         at = int(input("Enter Arrival Time: "))
@@ -24,7 +23,6 @@ def main():
     current_time = 0
 
     while completed < n:
-        # Find process with shortest burst time among arrived and not done
         idx = -1
         min_bt = float('inf')
 
