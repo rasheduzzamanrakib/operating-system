@@ -3,7 +3,8 @@
 #include <algorithm> // for sort
 using namespace std;
 
-class Process {
+class Process 
+{
 public:
     int p_id;   // Process ID
     int at;     // Arrival Time
@@ -12,7 +13,8 @@ public:
     int tat;    // Turnaround Time
     int wt;     // Waiting Time
 
-    Process(int id, int arrival, int burst) {
+    Process(int id, int arrival, int burst) 
+    {
         p_id = id;
         at = arrival;
         bt = burst;
@@ -20,13 +22,15 @@ public:
     }
 };
 
-int main() {
+int main() 
+{
     int n;
     cout << "Enter number of Processes: ";
     cin >> n;
 
     vector<Process> processes;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) 
+    {
         int id, at, bt;
         cout << "\nEnter Process Number: ";
         cin >> id;
@@ -42,10 +46,14 @@ int main() {
          [](Process &a, Process &b) { return a.at < b.at; });
 
     int current_time = 0;
-    for (int i = 0; i < n; i++) {
-        if (i == 0) {
+    for (int i = 0; i < n; i++) 
+    {
+        if (i == 0) 
+        {
             processes[i].ct = processes[i].at + processes[i].bt;
-        } else {
+        } 
+        else 
+        {
             if (processes[i].at > current_time)
                 processes[i].ct = processes[i].at + processes[i].bt;
             else
