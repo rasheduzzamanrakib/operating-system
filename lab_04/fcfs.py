@@ -1,49 +1,73 @@
-# FCFS Scheduling in Python
+#include <iostream>
+#include <vector>
+#include <algorithm> // for sort
+using namespace std;
 
-class Process:
-    def __init__(self, p_id, at, bt):
-        self.p_id = p_id    # Process ID
-        self.at = at        # Arrival Time
-        self.bt = bt        # Burst Time
-        self.ct = 0         # Completion Time (to be calculated)
-        self.tat = 0        # Turnaround Time (to be calculated)
-        self.wt = 0         # Waiting Time (to be calculated)
+class Process {
+public:
+    int p_id;   // Process ID
+    int at;     // Arrival Time
+    int bt;     // Burst Time
+    int ct;     // Completion Time
+    int tat;    // Turnaround Time
+    int wt;     // Waiting Time
 
-def main():
-    n = int(input("Enter number of Processes: "))
-    processes = []
+    Process(int id, int arrival, int burst) {
+        p_id = id;
+        at = arrival;
+        bt = burst;
+        ct = tat = wt = 0;
+    }
+};
 
-    # Input process details
-    for _ in range(n):
-        p_id = int(input("Enter Process Number: "))
-        at = int(input("Enter Arrival Time: "))
-        bt = int(input("Enter Burst Time: "))
-        processes.append(Process(p_id, at, bt))
+int main() {
+    int n;
+    cout << "Enter number of Processes: ";
+    cin >> n;
 
-    # Sort processes based on arrival time
-    processes.sort(key=lambda x: x.at)
+    vector<Process> processes;
+    for (int i = 0; i < n; i++) {
+        int id, at, bt;
+        cout << "\nEnter Process Number: ";
+        cin >> id;
+        cout << "Enter Arrival Time: ";
+        cin >> at;
+        cout << "Enter Burst Time: ";
+        cin >> bt;
+        processes.push_back(Process(id, at, bt));
+    }
 
-    current_time = 0
-    for i, process in enumerate(processes):
-        # Calculate completion time
-        if i == 0:
-            process.ct = process.at + process.bt
-        else:
-            if process.at > current_time:
-                process.ct = process.at + process.bt
-            else:
-                process.ct = processes[i-1].ct + process.bt
+    // Sort processes by Arrival Time
+    sort(processes.begin(), processes.end(),
+         [](Process &a, Process &b) { return a.at < b.at; });
 
-        current_time = process.ct
+    int current_time = 0;
+    for (int i = 0; i < n; i++) {
+        if (i == 0) {
+            processes[i].ct = processes[i].at + processes[i].bt;
+        } else {
+            if (processes[i].at > current_time)
+                processes[i].ct = processes[i].at + processes[i].bt;
+            else
+                processes[i].ct = processes[i - 1].ct + processes[i].bt;
+        }
 
-        # Calculate turnaround time and waiting time
-        process.tat = process.ct - process.at
-        process.wt = process.tat - process.bt
+        current_time = processes[i].ct;
 
-    # Print results
-    print("\nProcess ID | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time")
-    for p in processes:
-        print(f"{p.p_id:^10} | {p.at:^12} | {p.bt:^10} | {p.ct:^15} | {p.tat:^15} | {p.wt:^12}")
+        processes[i].tat = processes[i].ct - processes[i].at;
+        processes[i].wt = processes[i].tat - processes[i].bt;
+    }
 
-if __name__ == "__main__":
-    main()
+    // Print results
+    cout << "\nProcess ID | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time\n";
+    for (auto &p : processes) {
+        cout << "    " << p.p_id
+             << "      |      " << p.at
+             << "       |     " << p.bt
+             << "      |       " << p.ct
+             << "         |       " << p.tat
+             << "        |      " << p.wt << "\n";
+    }
+
+    return 0;
+}
