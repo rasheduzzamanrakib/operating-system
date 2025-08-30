@@ -1,51 +1,80 @@
-# Define a Process class to hold process info
-class Process:
-    def __init__(self, p_id, at, bt):
-        self.p_id = p_id
-        self.at = at        # Arrival Time
-        self.bt = bt        # Burst Time
-        self.ct = 0         # Completion Time
-        self.tat = 0        # Turnaround Time
-        self.wt = 0         # Waiting Time
-        self.done = False   # Flag to mark if process completed
+#include <iostream>
+#include <vector>
+#include <limits.h> // for INT_MAX
+using namespace std;
 
-def main():
-    n = int(input("Enter number of Processes: "))
-    processes = []
+class Process {
+public:
+    int p_id;   // Process ID
+    int at;     // Arrival Time
+    int bt;     // Burst Time
+    int ct;     // Completion Time
+    int tat;    // Turnaround Time
+    int wt;     // Waiting Time
+    bool done;  // Completed or not
 
-    for _ in range(n):
-        p_id = int(input("Enter Process Number: "))
-        at = int(input("Enter Arrival Time: "))
-        bt = int(input("Enter Burst Time: "))
-        processes.append(Process(p_id, at, bt))
+    Process(int id, int arrival, int burst) {
+        p_id = id;
+        at = arrival;
+        bt = burst;
+        ct = tat = wt = 0;
+        done = false;
+    }
+};
 
-    completed = 0
-    current_time = 0
+int main() {
+    int n;
+    cout << "Enter number of Processes: ";
+    cin >> n;
 
-    while completed < n:
-        idx = -1
-        min_bt = float('inf')
+    vector<Process> processes;
+    for (int i = 0; i < n; i++) {
+        int id, at, bt;
+        cout << "\nEnter Process Number: ";
+        cin >> id;
+        cout << "Enter Arrival Time: ";
+        cin >> at;
+        cout << "Enter Burst Time: ";
+        cin >> bt;
+        processes.push_back(Process(id, at, bt));
+    }
 
-        for i, p in enumerate(processes):
-            if (not p.done) and (p.at <= current_time) and (p.bt < min_bt):
-                min_bt = p.bt
-                idx = i
+    int completed = 0, current_time = 0;
 
-        if idx == -1:
-            # No process ready, increment current time
-            current_time += 1
-        else:
-            # Run the selected process
-            p = processes[idx]
-            p.ct = current_time + p.bt
-            p.tat = p.ct - p.at
-            p.wt = p.tat - p.bt
-            p.done = True
+    while (completed < n) {
+        int idx = -1;
+        int min_bt = INT_MAX;
 
-            current_time = p.ct
-            completed += 1
+        // Find process with minimum burst time among available
+        for (int i = 0; i < n; i++) {
+            if (!processes[i].done && processes[i].at <= current_time && processes[i].bt < min_bt) {
+                min_bt = processes[i].bt;
+                idx = i;
+            }
+        }
 
-            print(f"Process id {p.p_id}, at {p.at}, bt {p.bt}, ct {p.ct}, tat {p.tat}, wt {p.wt}")
+        if (idx == -1) {
+            // No process ready, increment time
+            current_time++;
+        } else {
+            // Execute selected process
+            Process &p = processes[idx];
+            p.ct = current_time + p.bt;
+            p.tat = p.ct - p.at;
+            p.wt = p.tat - p.bt;
+            p.done = true;
 
-if __name__ == "__main__":
-    main()
+            current_time = p.ct;
+            completed++;
+
+            cout << "\nProcess ID: " << p.p_id
+                 << " | AT: " << p.at
+                 << " | BT: " << p.bt
+                 << " | CT: " << p.ct
+                 << " | TAT: " << p.tat
+                 << " | WT: " << p.wt;
+        }
+    }
+
+    return 0;
+}
